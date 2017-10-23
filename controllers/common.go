@@ -51,7 +51,7 @@ func IsIpAddr(ip string) bool {
 }
 
 func GetMacFromIp(ip string) string {
-	inputFile,inputError := os.Open("/home/xuliang/assetStatistics/src/assetStatistics/ipvsmac.txt")
+	inputFile,inputError := os.Open("/home/xuliang/assetStatistics/src/ipvsmac.txt")
 	if inputError != nil {
 		fmt.Printf("An error occurred on opening the inputfile\n" +
 		         "Does the file exist?\n" +  "Have you got acces to it?\n")
