@@ -23,16 +23,20 @@ func GetAllAssets() []*Assetinfo {
 }
 
 func GetOneByName(name string) Assetinfo {
-	a := Assetinfo{Name:name}
 	o := orm.NewOrm()
 	o.Using("default")
-	err := o.Read(&a)
+	q := o.QueryTable("assetinfo")
+
+	a := Assetinfo{Name:name}
+
+	err := q.Filter("name__istartswith",name).One(&a)
 	if err == orm.ErrNoRows {
 		fmt.Println("查询不到")
 	} else if err == orm.ErrMissPK {
 		fmt.Println("缺少主键")
 	}
 	return a
+	
 }
 
 func GetOneByMac(mac string) Assetinfo {
