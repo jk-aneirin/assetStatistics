@@ -1,17 +1,24 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
 	"assetStatistics/models"
 	"encoding/json"
 	"regexp"
+	"strings"
+
+	"github.com/astaxie/beego"
 )
-		    
+
 // AssetController definition.
 type AssetController struct {
 	beego.Controller
 }
-					    
+
+//type AssetinfoWithIp struct {
+//	entry models.Assetinfo
+//	ip    string
+//}
+
 // Get method.
 func (c *AssetController) GetAll() {
 	ss := models.GetAllAssets()
@@ -25,8 +32,8 @@ func (c *AssetController) GetByNameOrMacOrIp() {
 
 	if IsMacAddr(k) {
 		if k[2] == ':' {
-			re ,_ := regexp.Compile(":")
-			k = re.ReplaceAllString(k,"-")
+			re, _ := regexp.Compile(":")
+			k = re.ReplaceAllString(k, "-")
 		}
 		a = models.GetOneByMac(k)
 	} else if IsIpAddr(k) {
@@ -36,23 +43,31 @@ func (c *AssetController) GetByNameOrMacOrIp() {
 		a = models.GetOneByName(k)
 	}
 
-	c.Data["json"] = a 
+	result := GetIpFromMac(a.Macaddr)
+	ip := strings.Split(result, "=")[0]
+	if IsIpAddr(ip) {
+		c.Ctx.WriteString(a.Name + "'s ip is " + ip + "\n")
+	} else {
+		c.Ctx.WriteString("No record" + "\n")
+	}
+
+	c.Data["json"] = a
 	c.ServeJSON()
 }
 
 func (c *AssetController) Post() {
 	var a models.Assetinfo
 	json.Unmarshal(c.Ctx.Input.RequestBody, &a)
-    if !IsMacAddr(a.Macaddr) {
-		c.Ctx.WriteString("MAC地址写错了，标准格式为aa-bb-cc-dd-ee-dd")	
-		return 
+	if !IsMacAddr(a.Macaddr) {
+		c.Ctx.WriteString("MAC地址写错了，标准格式为aa-bb-cc-dd-ee-dd")
+		return
 	}
 
 	if a.Macaddr[2] == ':' {
-		re ,_ := regexp.Compile(":")
-		a.Macaddr = re.ReplaceAllString(a.Macaddr,"-")
+		re, _ := regexp.Compile(":")
+		a.Macaddr = re.ReplaceAllString(a.Macaddr, "-")
 	}
-	
+
 	name := models.AddAsset(&a)
 	c.Data["json"] = name
 	c.ServeJSON()
@@ -67,19 +82,18 @@ func (c *AssetController) Delete() {
 
 func (c *AssetController) Update() {
 	var a models.Assetinfo
-	json.Unmarshal(c.Ctx.Input.RequestBody,&a)
-    if !IsMacAddr(a.Macaddr) {
-		c.Ctx.WriteString("MAC地址写错了，标准格式为aa-bb-cc-dd-ee-dd")	
-		return 
+	json.Unmarshal(c.Ctx.Input.RequestBody, &a)
+	if !IsMacAddr(a.Macaddr) {
+		c.Ctx.WriteString("MAC地址写错了，标准格式为aa-bb-cc-dd-ee-dd")
+		return
 	}
 
 	if a.Macaddr[2] == ':' {
-		re ,_ := regexp.Compile(":")
-		a.Macaddr = re.ReplaceAllString(a.Macaddr,"-")
+		re, _ := regexp.Compile(":")
+		a.Macaddr = re.ReplaceAllString(a.Macaddr, "-")
 	}
 
 	models.UpdateAsset(&a)
 	c.Data["json"] = a
 	c.ServeJSON()
 }
-
