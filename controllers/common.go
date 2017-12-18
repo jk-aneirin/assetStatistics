@@ -82,7 +82,7 @@ func GetMacFromIp(ip string) string {
 }
 
 func GetIpFromMac(mac string) string {
-	cmd := exec.Command("/bin/grep", "-i", mac, "/home/xuliang/assetStatistics/src/result.txt")
+	cmd := exec.Command("/bin/grep", "-i", mac, "../../result.txt")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Run()
