@@ -53,7 +53,7 @@ func IsIpAddr(ip string) bool {
 }
 
 func GetMacFromIp(ip string) string {
-	inputFile, inputError := os.Open("/home/xuliang/assetStatistics/src/ipvsmac.txt")
+	inputFile, inputError := os.Open("/tmp/result.txt")
 	if inputError != nil {
 		fmt.Printf("An error occurred on opening the inputfile\n" +
 			"Does the file exist?\n" + "Have you got acces to it?\n")
@@ -67,12 +67,13 @@ func GetMacFromIp(ip string) string {
 		inputString, readerError := inputReader.ReadString('\n')
 		match, _ := regexp.MatchString(ip, inputString)
 		if match {
-			targetlens := len(inputString)
-			tgt := []string{inputString[targetlens-19 : targetlens-17], inputString[targetlens-16 : targetlens-14],
-				inputString[targetlens-13 : targetlens-11], inputString[targetlens-10 : targetlens-8],
-				inputString[targetlens-7 : targetlens-5], inputString[targetlens-4 : targetlens-2]}
-			fmt.Printf(strings.Join(tgt, "-"))
-			return strings.Join(tgt, "-")
+			//			targetlens := len(inputString)
+			//			tgt := []string{inputString[targetlens-19 : targetlens-17], inputString[targetlens-16 : targetlens-14],
+			//				inputString[targetlens-13 : targetlens-11], inputString[targetlens-10 : targetlens-8],
+			//				inputString[targetlens-7 : targetlens-5], inputString[targetlens-4 : targetlens-2]}
+			//			fmt.Printf(strings.Join(tgt, "-"))
+			//			return strings.Join(tgt, "-")
+			return strings.Split(inputString, "=")[0]
 		}
 		if readerError == io.EOF {
 			return ""
@@ -82,7 +83,7 @@ func GetMacFromIp(ip string) string {
 }
 
 func GetIpFromMac(mac string) string {
-	cmd := exec.Command("/bin/grep", "-i", mac, "../../result.txt")
+	cmd := exec.Command("/bin/grep", "-i", mac, "/tmp/result.txt")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Run()
