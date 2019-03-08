@@ -1,7 +1,4 @@
-统计资产信息，包括主机和显示器，可以通过post方法将主机和显示器的信息上传到mysql数据库，
-实现了增删改查的功能。查询时，通过mac地址、ip地址、用户名都可以。
-程序中，为了找到指定ip对应的mac地址，通过snmp协议查询核心交换机得到，这些信息保存在文件中，
-所以这个文件需要定期更新。<br>
-查询方法：
-     snmpwalk -v 2c -c communityname switch-ip-addr .1.3.6.1.2.1.3.1.1.2 > ipvsmac.txt
-
+注意：
+文件main/conf/app.conf必须包含copyrequestbody = true，否则不能post数据
+models.Entryinfo必须包含Id属性，即使将Name设置为主键也不行。否则不能在数据库中成功的创建表，应该是个bug
+beego orm只能通过主键删除表记录，不能使用名字这个非主键来删除，不是很便利
