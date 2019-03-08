@@ -46,4 +46,4 @@ else
 
 $sertag = $sertag.Trim()
 $data = @{name="$username";apt="$apt";sertag="$sertag";macaddr="$macaddr";mtorsn="$mtorsn"} | ConvertTo-Json -Compress
-Invoke-WebRequest -usebasicparsing http://10.1.48.30:8080/assets/ -contenttype "application/json" -method post -body $data
+Invoke-WebRequest -usebasicparsing http://asset.example.com:8080/assets/ -contenttype "application/json" -method post -body $data
